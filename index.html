@@ -1,15 +1,34 @@
 <script>
     const noBtn = document.getElementById("noBtn");
 
+    /* -----------------------------
+       TYPEWRITER EFFECT (unchanged)
+    ------------------------------*/
+    const text = "Will you be my Valentine? ❤️";
+    let i = 0;
+
+    function typeWriter() {
+        if (i < text.length) {
+            document.getElementById("question").innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 60);
+        }
+    }
+
+    typeWriter();
+
+    /* --------------------------------
+       SMOOTH REPULSIVE FIELD BEHAVIOR
+    ---------------------------------*/
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
 
     let velocityX = 0;
     let velocityY = 0;
 
-    const repelRadius = 140;      // how close cursor can get
-    const repelStrength = 0.25;   // panic intensity
-    const friction = 0.85;        // smoothness
+    const repelRadius = 120;      // how close cursor may approach
+    const repelStrength = 0.2;    // repulsion intensity
+    const friction = 0.9;         // smoothness / inertia
 
     document.addEventListener("mousemove", (e) => {
         mouseX = e.clientX;
@@ -27,7 +46,8 @@
 
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < repelRadius) {
+        /* Prevent divide-by-zero + apply repulsion */
+        if (distance > 0.1 && distance < repelRadius) {
             const force = (repelRadius - distance) * repelStrength;
 
             velocityX += (dx / distance) * force;
@@ -40,6 +60,7 @@
         let newX = btnX + velocityX;
         let newY = btnY + velocityY;
 
+        /* Keep inside viewport */
         const maxX = window.innerWidth - rect.width;
         const maxY = window.innerHeight - rect.height;
 
@@ -55,18 +76,9 @@
 
     animateNoButton();
 
-    // Typewriter effect (UNCHANGED BEHAVIOR)
-    const text = "Will you be my Valentine? ❤️";
-    let i = 0;
-    function typeWriter() {
-        if (i < text.length) {
-            document.getElementById("question").innerHTML += text.charAt(i);
-            i++;
-            setTimeout(typeWriter, 60);
-        }
-    }
-    typeWriter();
-
+    /* -----------------------------
+       YES BUTTON CELEBRATION
+    ------------------------------*/
     function sayYes() {
         for (let i = 0; i < 80; i++) {
             const heart = document.createElement("div");
@@ -76,6 +88,7 @@
             heart.style.animationDuration = "2s";
             heart.style.fontSize = "20px";
             document.body.appendChild(heart);
+
             setTimeout(() => heart.remove(), 2000);
         }
 
@@ -88,7 +101,9 @@
         }, 500);
     }
 
-    // Floating hearts (UNCHANGED)
+    /* -----------------------------
+       FLOATING HEARTS BACKGROUND
+    ------------------------------*/
     setInterval(() => {
         const heart = document.createElement("div");
         heart.className = "heart";
@@ -96,6 +111,7 @@
         heart.style.left = Math.random() * 100 + "vw";
         heart.style.animationDuration = (3 + Math.random() * 2) + "s";
         heart.style.fontSize = (16 + Math.random() * 24) + "px";
+
         document.body.appendChild(heart);
         setTimeout(() => heart.remove(), 5000);
     }, 400);
