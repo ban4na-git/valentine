@@ -1,113 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Important Question</title>
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        margin: 0;
-        overflow: hidden;
-        animation: bgPulse 6s infinite alternate;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-
-    @keyframes bgPulse {
-        from { filter: brightness(1); }
-        to { filter: brightness(1.15); }
-    }
-
-    h1 {
-        font-size: clamp(1.8em, 5vw, 2.5em);
-        color: white;
-        margin: 15px 0;
-        min-height: 60px;
-    }
-
-    .gif {
-        width: min(220px, 60vw);
-        border-radius: 20px;
-        margin: 10px 0;
-    }
-
-    .button-container {
-        display: flex;
-        gap: 15px;
-        margin-top: 10px;
-        z-index: 1;
-    }
-
-    .btn {
-        font-size: 1.2em;
-        padding: 14px 28px;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: transform 0.2s ease;
-        touch-action: manipulation;
-    }
-
-    #yesBtn {
-        background-color: #28a745;
-        color: white;
-    }
-
-    #yesBtn:hover {
-        transform: scale(1.1);
-    }
-
-    #noBtn {
-        background-color: #dc3545;
-        color: white;
-        position: relative; /* IMPORTANT FIX */
-    }
-
-    .heart {
-        position: fixed;
-        bottom: -20px;
-        animation: floatUp linear forwards;
-        pointer-events: none;
-    }
-
-    @keyframes floatUp {
-        to {
-            transform: translateY(-110vh);
-            opacity: 0;
-        }
-    }
-</style>
-</head>
-<body>
-
-<img class="gif" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
-
-<h1 id="question"></h1>
-
-<img class="gif" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
-
-<div class="button-container">
-    <button id="yesBtn" class="btn" onclick="sayYes()">Yes 💖</button>
-    <button id="noBtn" class="btn">No 💔</button>
-</div>
-
-<audio autoplay loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8b05d9c2b.mp3?filename=romantic-background-112191.mp3" type="audio/mpeg">
-</audio>
-
 <script>
     const noBtn = document.getElementById("noBtn");
 
-    // Typewriter effect
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+
+    let velocityX = 0;
+    let velocityY = 0;
+
+    const repelRadius = 140;      // how close cursor can get
+    const repelStrength = 0.25;   // panic intensity
+    const friction = 0.85;        // smoothness
+
+    document.addEventListener("mousemove", (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    function animateNoButton() {
+        const rect = noBtn.getBoundingClientRect();
+
+        const btnX = rect.left;
+        const btnY = rect.top;
+
+        const dx = btnX - mouseX;
+        const dy = btnY - mouseY;
+
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < repelRadius) {
+            const force = (repelRadius - distance) * repelStrength;
+
+            velocityX += (dx / distance) * force;
+            velocityY += (dy / distance) * force;
+        }
+
+        velocityX *= friction;
+        velocityY *= friction;
+
+        let newX = btnX + velocityX;
+        let newY = btnY + velocityY;
+
+        const maxX = window.innerWidth - rect.width;
+        const maxY = window.innerHeight - rect.height;
+
+        newX = Math.max(0, Math.min(maxX, newX));
+        newY = Math.max(0, Math.min(maxY, newY));
+
+        noBtn.style.position = "fixed";
+        noBtn.style.left = newX + "px";
+        noBtn.style.top = newY + "px";
+
+        requestAnimationFrame(animateNoButton);
+    }
+
+    animateNoButton();
+
+    // Typewriter effect (UNCHANGED BEHAVIOR)
     const text = "Will you be my Valentine? ❤️";
     let i = 0;
     function typeWriter() {
@@ -118,33 +66,6 @@
         }
     }
     typeWriter();
-
-    let noScale = 1;
-
-    function moveNoButton() {
-        const btnWidth = noBtn.offsetWidth;
-        const btnHeight = noBtn.offsetHeight;
-
-        const maxX = window.innerWidth - btnWidth - 20;
-        const maxY = window.innerHeight - btnHeight - 20;
-
-        const x = Math.random() * maxX;
-        const y = Math.random() * maxY;
-
-        noBtn.style.position = "fixed";  // becomes chaotic ONLY after hover/touch
-        noBtn.style.left = x + "px";
-        noBtn.style.top = y + "px";
-
-        noScale -= 0.08;
-        noBtn.style.transform = `scale(${noScale})`;
-
-        if (noScale <= 0.3) {
-            noBtn.innerText = "okay fine 😭";
-        }
-    }
-
-    noBtn.addEventListener("mouseover", moveNoButton);
-    noBtn.addEventListener("touchstart", moveNoButton);
 
     function sayYes() {
         for (let i = 0; i < 80; i++) {
@@ -167,7 +88,7 @@
         }, 500);
     }
 
-    // Floating hearts
+    // Floating hearts (UNCHANGED)
     setInterval(() => {
         const heart = document.createElement("div");
         heart.className = "heart";
@@ -179,6 +100,3 @@
         setTimeout(() => heart.remove(), 5000);
     }, 400);
 </script>
-
-</body>
-</html>
