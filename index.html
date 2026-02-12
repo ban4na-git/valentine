@@ -29,21 +29,31 @@
 
     h1 {
         font-size: clamp(1.8em, 5vw, 2.5em);
-        color: #fff;
+        color: white;
         margin: 15px 0;
-        z-index: 1;
         min-height: 60px;
+    }
+
+    .gif {
+        width: min(220px, 60vw);
+        border-radius: 20px;
+        margin: 10px 0;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+        z-index: 1;
     }
 
     .btn {
         font-size: 1.2em;
         padding: 14px 28px;
-        margin: 10px;
         border: none;
         border-radius: 30px;
         cursor: pointer;
         transition: transform 0.2s ease;
-        z-index: 1;
         touch-action: manipulation;
     }
 
@@ -59,14 +69,7 @@
     #noBtn {
         background-color: #dc3545;
         color: white;
-        position: fixed;
-    }
-
-    .gif {
-        width: min(220px, 60vw);
-        border-radius: 20px;
-        margin: 10px 0;
-        z-index: 1;
+        position: relative; /* IMPORTANT FIX */
     }
 
     .heart {
@@ -86,14 +89,16 @@
 </head>
 <body>
 
-<img class="gif" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="cute gif">
+<img class="gif" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
 
 <h1 id="question"></h1>
 
-<img class="gif" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" alt="funny gif">
+<img class="gif" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
 
-<button id="yesBtn" class="btn" onclick="sayYes()">Yes 💖</button>
-<button id="noBtn" class="btn">No 💔</button>
+<div class="button-container">
+    <button id="yesBtn" class="btn" onclick="sayYes()">Yes 💖</button>
+    <button id="noBtn" class="btn">No 💔</button>
+</div>
 
 <audio autoplay loop>
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8b05d9c2b.mp3?filename=romantic-background-112191.mp3" type="audio/mpeg">
@@ -102,7 +107,7 @@
 <script>
     const noBtn = document.getElementById("noBtn");
 
-    // Typewriter question
+    // Typewriter effect
     const text = "Will you be my Valentine? ❤️";
     let i = 0;
     function typeWriter() {
@@ -114,24 +119,19 @@
     }
     typeWriter();
 
-    // No button movement (controlled area)
     let noScale = 1;
+
     function moveNoButton() {
         const btnWidth = noBtn.offsetWidth;
         const btnHeight = noBtn.offsetHeight;
 
-        const marginX = window.innerWidth * 0.15;
-        const marginY = window.innerHeight * 0.2;
+        const maxX = window.innerWidth - btnWidth - 20;
+        const maxY = window.innerHeight - btnHeight - 20;
 
-        const maxX = window.innerWidth - btnWidth - marginX;
-        const maxY = window.innerHeight - btnHeight - marginY;
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
 
-        const minX = marginX / 2;
-        const minY = marginY / 2;
-
-        const x = Math.random() * (maxX - minX) + minX;
-        const y = Math.random() * (maxY - minY) + minY;
-
+        noBtn.style.position = "fixed";  // becomes chaotic ONLY after hover/touch
         noBtn.style.left = x + "px";
         noBtn.style.top = y + "px";
 
@@ -148,35 +148,33 @@
 
     function sayYes() {
         for (let i = 0; i < 80; i++) {
-            const conf = document.createElement("div");
-            conf.innerHTML = "💖";
-            conf.style.position = "fixed";
-            conf.style.left = Math.random() * 100 + "vw";
-            conf.style.top = Math.random() * 100 + "vh";
-            conf.style.fontSize = "20px";
-            conf.style.animation = "floatUp 2s ease-out forwards";
-            document.body.appendChild(conf);
+            const heart = document.createElement("div");
+            heart.className = "heart";
+            heart.innerHTML = "💖";
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = "2s";
+            heart.style.fontSize = "20px";
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 2000);
         }
 
         setTimeout(() => {
             document.body.innerHTML = `
-                <h1 style="color:white; padding:20px;">Best decision ever 🥰💘</h1>
+                <h1 style="color:white;">Best decision ever 🥰💘</h1>
                 <img class="gif" src="https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif">
                 <img class="gif" src="https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif">
             `;
-        }, 800);
+        }, 500);
     }
 
-    // Floating hearts background
+    // Floating hearts
     setInterval(() => {
         const heart = document.createElement("div");
         heart.className = "heart";
         heart.innerHTML = "💖";
-
         heart.style.left = Math.random() * 100 + "vw";
         heart.style.animationDuration = (3 + Math.random() * 2) + "s";
         heart.style.fontSize = (16 + Math.random() * 24) + "px";
-
         document.body.appendChild(heart);
         setTimeout(() => heart.remove(), 5000);
     }, 400);
