@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Important Question ❤️</title>
+<title>Important Question</title>
 
 <style>
     body {
@@ -31,6 +31,7 @@
         font-size: clamp(1.8em, 5vw, 2.5em);
         color: #fff;
         margin: 15px 0;
+        z-index: 1;
         min-height: 60px;
     }
 
@@ -42,6 +43,7 @@
         border-radius: 30px;
         cursor: pointer;
         transition: transform 0.2s ease;
+        z-index: 1;
         touch-action: manipulation;
     }
 
@@ -58,14 +60,13 @@
         background-color: #dc3545;
         color: white;
         position: fixed;
-        left: 50%;
-        transform: translateX(-50%);
     }
 
     .gif {
         width: min(220px, 60vw);
         border-radius: 20px;
         margin: 10px 0;
+        z-index: 1;
     }
 
     .heart {
@@ -81,138 +82,104 @@
             opacity: 0;
         }
     }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
 </style>
 </head>
-
 <body>
 
-<img class="gif" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="Cute gif">
+<img class="gif" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="cute gif">
 
 <h1 id="question"></h1>
 
-<img class="gif" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" alt="Funny gif">
+<img class="gif" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" alt="funny gif">
 
-<button id="yesBtn" class="btn">Yes 💖</button>
+<button id="yesBtn" class="btn" onclick="sayYes()">Yes 💖</button>
 <button id="noBtn" class="btn">No 💔</button>
 
-<audio id="bgMusic" loop>
+<audio autoplay loop>
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8b05d9c2b.mp3?filename=romantic-background-112191.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-const question = document.getElementById("question");
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const audio = document.getElementById("bgMusic");
+    const noBtn = document.getElementById("noBtn");
 
-
-// ---------- Typewriter Effect ----------
-const text = "Will you be my Valentine? ❤️";
-let index = 0;
-
-(function typeWriter() {
-    if (index < text.length) {
-        question.textContent += text[index++];
-        setTimeout(typeWriter, 60);
+    // Typewriter question
+    const text = "Will you be my Valentine? ❤️";
+    let i = 0;
+    function typeWriter() {
+        if (i < text.length) {
+            document.getElementById("question").innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 60);
+        }
     }
-})();
+    typeWriter();
 
+    // No button movement (controlled area)
+    let noScale = 1;
+    function moveNoButton() {
+        const btnWidth = noBtn.offsetWidth;
+        const btnHeight = noBtn.offsetHeight;
 
-// ---------- No Button Behavior ----------
-let noScale = 1;
-let tries = 0;
+        const marginX = window.innerWidth * 0.15;
+        const marginY = window.innerHeight * 0.2;
 
-function moveNoButton() {
-    tries++;
+        const maxX = window.innerWidth - btnWidth - marginX;
+        const maxY = window.innerHeight - btnHeight - marginY;
 
-    const rect = noBtn.getBoundingClientRect();
-    const padding = 20;
+        const minX = marginX / 2;
+        const minY = marginY / 2;
 
-    const maxX = window.innerWidth - rect.width - padding;
-    const maxY = window.innerHeight - rect.height - padding;
+        const x = Math.random() * (maxX - minX) + minX;
+        const y = Math.random() * (maxY - minY) + minY;
 
-    const x = Math.random() * maxX;
-    const y = Math.random() * maxY;
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
 
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
+        noScale -= 0.08;
+        noBtn.style.transform = `scale(${noScale})`;
 
-    noScale = Math.max(0.4, noScale - 0.07);
-    noBtn.style.transform = `scale(${noScale})`;
-
-    if (tries > 6) noBtn.textContent = "You sure? 😭";
-    if (tries > 10) noBtn.textContent = "Okay fine 😔";
-}
-
-noBtn.addEventListener("mouseover", moveNoButton);
-noBtn.addEventListener("touchstart", moveNoButton);
-
-
-// ---------- Yes Button ----------
-yesBtn.addEventListener("click", () => {
-    audio.play().catch(() => {});
-
-    const overlay = document.createElement("div");
-    overlay.style.cssText = `
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(135deg,#ff9a9e,#fad0c4);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        animation: fadeIn 0.6s ease;
-        z-index: 9999;
-        text-align: center;
-        color: white;
-    `;
-
-    overlay.innerHTML = `
-        <h1>Best decision ever 🥰💘</h1>
-        <img class="gif" src="https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif">
-        <img class="gif" src="https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif">
-    `;
-
-    document.body.appendChild(overlay);
-
-    for (let i = 0; i < 120; i++) {
-        const heart = document.createElement("span");
-        heart.textContent = "💖";
-        heart.style.cssText = `
-            position: fixed;
-            left: ${Math.random() * 100}vw;
-            top: ${Math.random() * 100}vh;
-            font-size: ${16 + Math.random() * 30}px;
-            animation: floatUp 2s ease-out forwards;
-        `;
-        overlay.appendChild(heart);
+        if (noScale <= 0.3) {
+            noBtn.innerText = "okay fine 😭";
+        }
     }
-});
 
+    noBtn.addEventListener("mouseover", moveNoButton);
+    noBtn.addEventListener("touchstart", moveNoButton);
 
-// ---------- Floating Hearts Background ----------
-setInterval(() => {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.textContent = "💖";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (14 + Math.random() * 20) + "px";
-    heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+    function sayYes() {
+        for (let i = 0; i < 80; i++) {
+            const conf = document.createElement("div");
+            conf.innerHTML = "💖";
+            conf.style.position = "fixed";
+            conf.style.left = Math.random() * 100 + "vw";
+            conf.style.top = Math.random() * 100 + "vh";
+            conf.style.fontSize = "20px";
+            conf.style.animation = "floatUp 2s ease-out forwards";
+            document.body.appendChild(conf);
+        }
 
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
-}, 600);
+        setTimeout(() => {
+            document.body.innerHTML = `
+                <h1 style="color:white; padding:20px;">Best decision ever 🥰💘</h1>
+                <img class="gif" src="https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif">
+                <img class="gif" src="https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif">
+            `;
+        }, 800);
+    }
 
+    // Floating hearts background
+    setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "💖";
 
-// ---------- Reduced Motion Support ----------
-if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    document.body.style.animation = "none";
-}
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+        heart.style.fontSize = (16 + Math.random() * 24) + "px";
+
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 5000);
+    }, 400);
 </script>
 
 </body>
