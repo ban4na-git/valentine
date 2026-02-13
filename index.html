@@ -49,7 +49,7 @@ h1 {
 
 button {
     position: absolute;
-    width: 80px;
+    width: 90px;
     height: 44px;
     border: none;
     border-radius: 999px;
@@ -103,29 +103,36 @@ const area  = document.getElementById("buttonArea");
 let x = area.clientWidth - 110;
 let y = 0;
 
+// Detect if mobile / touch device
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+// Desktop: smooth repulsive force
 function repel(targetX, targetY) {
     const rect = noBtn.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
-    const cy = rect.top  + rect.height / 2;
+    const cy = rect.top + rect.height / 2;
 
     const dx = targetX - cx;
     const dy = targetY - cy;
 
     const distance = Math.sqrt(dx*dx + dy*dy);
-    const repelRadius = 270; // smaller on phones
+    const repelRadius = 270;
 
     if (distance < repelRadius) {
         const angle = Math.atan2(dy, dx);
         const force = Math.pow((repelRadius - distance) / repelRadius, 2);
-        const strength = 2;
+        const strength = 1.5;
 
-        x -= Math.cos(angle) * strength * force * 6;
-        y -= Math.sin(angle) * strength * force * 6;
+        const jitterX = (Math.random() - 0.5) * 6;
+        const jitterY = (Math.random() - 0.5) * 6;
 
-        const maxX = area.clientWidth;
+        x -= Math.cos(angle) * strength * force * 6 + jitterX;
+        y -= Math.sin(angle) * strength * force * 6 + jitterY;
+
+        const maxX = area.clientWidth - 100;
         const minX = -300;
         const maxY = area.clientHeight;
-        const minY = -300;
+        const minY = -280;
 
         x = Math.max(minX, Math.min(maxX, x));
         y = Math.max(minY, Math.min(maxY, y));
@@ -134,15 +141,26 @@ function repel(targetX, targetY) {
     }
 }
 
-// mouse movement (desktop)
-document.addEventListener("mousemove", e => repel(e.clientX, e.clientY));
+// Desktop
+if (!isTouchDevice) {
+    document.addEventListener("mousemove", e => repel(e.clientX, e.clientY));
+}
 
-// touch movement (mobile)
-document.addEventListener("touchmove", e => {
-    if (e.touches.length > 0) {
-        repel(e.touches[0].clientX, e.touches[0].clientY);
-    }
-}, {passive: true});
+// Mobile / touch
+if (isTouchDevice) {
+    noBtn.addEventListener("touchstart", e => {
+        const maxX = area.clientWidth;
+        const minX = -280;
+        const maxY = area.clientHeight;
+        const minY = -280;
+
+        x = Math.random() * (maxX - minX) + minX;
+        y = Math.random() * (maxY - minY) + minY;
+
+        noBtn.style.transform = `translate(${x}px, ${y}px)`;
+        e.preventDefault(); // prevent accidental tap
+    }, {passive: false});
+}
 
 document.getElementById("yes").onclick = () => {
     document.body.innerHTML = `
