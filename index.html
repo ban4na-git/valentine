@@ -49,7 +49,7 @@ h1 {
 
 button {
     position: absolute;
-    width: 80px;
+    width: 110px;
     height: 44px;
     border: none;
     border-radius: 999px;
@@ -108,6 +108,11 @@ let y = 0;
 // Detect if mobile / touch device
 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
+// Universal clamp function
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+}
+
 // Desktop: smooth repulsive force
 function repel(targetX, targetY) {
     const rect = noBtn.getBoundingClientRect();
@@ -118,7 +123,7 @@ function repel(targetX, targetY) {
     const dy = targetY - cy;
 
     const distance = Math.sqrt(dx*dx + dy*dy);
-    const repelRadius = 180;
+    const repelRadius = 200;
 
     if (distance < repelRadius) {
         const angle = Math.atan2(dy, dx);
@@ -131,14 +136,14 @@ function repel(targetX, targetY) {
         x -= Math.cos(angle) * strength * force * 6 + jitterX;
         y -= Math.sin(angle) * strength * force * 6 + jitterY;
 
-        // Desktop roaming zone
-        const maxX = area.clientWidth + 120;
-        const minX = -120;
-        const maxY = 180;
-        const minY = -150;
+        // Clamp to screen bounds
+        const maxX = window.innerWidth - btnWidth;
+        const minX = 0;
+        const maxY = window.innerHeight - btnHeight;
+        const minY = 0;
 
-        x = Math.max(minX, Math.min(maxX, x));
-        y = Math.max(minY, Math.min(maxY, y));
+        x = clamp(x, minX, maxX);
+        y = clamp(y, minY, maxY);
 
         noBtn.style.transform = `translate(${x}px, ${y}px)`;
     }
@@ -167,7 +172,7 @@ document.getElementById("yes").onclick = () => {
     document.body.innerHTML = `
         <div class="container">
             <img class="gif" src="https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif">
-            <h1>Best choice ever ❤️😂</h1>
+            <h1>Yaaay ❤️😂</h1>
             <div style="font-size:80px">🥰💘🎉</div>
         </div>`;
 };
