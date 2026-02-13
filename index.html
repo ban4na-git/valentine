@@ -150,7 +150,7 @@ if (!isTouchDevice) {
 if (isTouchDevice) {
     noBtn.addEventListener("touchstart", e => {
         const maxX = area.clientWidth;
-        const minX = -280;
+        const minX = -200;
         const maxY = area.clientHeight;
         const minY = -280;
 
@@ -166,7 +166,7 @@ document.getElementById("yes").onclick = () => {
     document.body.innerHTML = `
         <div class="container">
             <img class="gif" src="https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif">
-            <h1>Best choice ever ❤️😂</h1>
+            <h1>Yaaay ❤️😂</h1>
             <div style="font-size:80px">🥰💘🎉</div>
         </div>`;
 };
@@ -174,7 +174,7 @@ document.getElementById("yes").onclick = () => {
 function spawnHeart() {
     const heart = document.createElement("div");
     heart.className = "heart";
-    heart.textContent = "❤️";
+    heart.textContent = "💖";
 
     heart.style.left = Math.random() * window.innerWidth + "px";
     heart.style.top  = (window.innerHeight + 20) + "px";
@@ -188,3 +188,4 @@ setInterval(spawnHeart, 300);
 </script>
 </body>
 </html>
+
