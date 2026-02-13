@@ -100,7 +100,7 @@ button {
 const noBtn = document.getElementById("no");
 const area  = document.getElementById("buttonArea");
 
-let x = area.clientWidth - 110;
+let x = area.clientWidth - 100;
 let y = 0;
 
 // Detect if mobile / touch device
@@ -149,7 +149,7 @@ if (!isTouchDevice) {
 // Mobile / touch
 if (isTouchDevice) {
     noBtn.addEventListener("touchstart", e => {
-        const maxX = area.clientWidth - 100;
+        const maxX = area.clientWidth - 200;
         const minX = -200;
         const maxY = area.clientHeight;
         const minY = -300;
@@ -188,5 +188,6 @@ setInterval(spawnHeart, 300);
 </script>
 </body>
 </html>
+
 
 
