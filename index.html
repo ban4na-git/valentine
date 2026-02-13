@@ -132,7 +132,7 @@ function repel(targetX, targetY) {
         const maxX = area.clientWidth - 100;
         const minX = -300;
         const maxY = area.clientHeight;
-        const minY = -280;
+        const minY = -300;
 
         x = Math.max(minX, Math.min(maxX, x));
         y = Math.max(minY, Math.min(maxY, y));
@@ -149,10 +149,10 @@ if (!isTouchDevice) {
 // Mobile / touch
 if (isTouchDevice) {
     noBtn.addEventListener("touchstart", e => {
-        const maxX = area.clientWidth;
+        const maxX = area.clientWidth - 100;
         const minX = -200;
         const maxY = area.clientHeight;
-        const minY = -280;
+        const minY = -300;
 
         x = Math.random() * (maxX - minX) + minX;
         y = Math.random() * (maxY - minY) + minY;
@@ -188,4 +188,5 @@ setInterval(spawnHeart, 300);
 </script>
 </body>
 </html>
+
 
