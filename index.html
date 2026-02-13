@@ -49,7 +49,7 @@ h1 {
 
 button {
     position: absolute;
-    width: 90px;
+    width: 80px;
     height: 44px;
     border: none;
     border-radius: 999px;
@@ -99,8 +99,10 @@ button {
 <script>
 const noBtn = document.getElementById("no");
 const area  = document.getElementById("buttonArea");
+const btnWidth = noBtn.offsetWidth;
+const btnHeight = noBtn.offsetHeight;
 
-let x = area.clientWidth - 100;
+let x = area.clientWidth - btnWidth;
 let y = 0;
 
 // Detect if mobile / touch device
@@ -110,18 +112,18 @@ const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 function repel(targetX, targetY) {
     const rect = noBtn.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
+    const cy = rect.top  + rect.height / 2;
 
     const dx = targetX - cx;
     const dy = targetY - cy;
 
     const distance = Math.sqrt(dx*dx + dy*dy);
-    const repelRadius = 270;
+    const repelRadius = 180;
 
     if (distance < repelRadius) {
         const angle = Math.atan2(dy, dx);
         const force = Math.pow((repelRadius - distance) / repelRadius, 2);
-        const strength = 1.5;
+        const strength = 2;
 
         const jitterX = (Math.random() - 0.5) * 6;
         const jitterY = (Math.random() - 0.5) * 6;
@@ -129,10 +131,11 @@ function repel(targetX, targetY) {
         x -= Math.cos(angle) * strength * force * 6 + jitterX;
         y -= Math.sin(angle) * strength * force * 6 + jitterY;
 
-        const maxX = area.clientWidth - 100;
-        const minX = -300;
-        const maxY = area.clientHeight;
-        const minY = -300;
+        // Desktop roaming zone
+        const maxX = area.clientWidth + 120;
+        const minX = -120;
+        const maxY = 180;
+        const minY = -150;
 
         x = Math.max(minX, Math.min(maxX, x));
         y = Math.max(minY, Math.min(maxY, y));
@@ -146,16 +149,14 @@ if (!isTouchDevice) {
     document.addEventListener("mousemove", e => repel(e.clientX, e.clientY));
 }
 
-// Mobile / touch
+// Mobile / touch: jump randomly within screen bounds
 if (isTouchDevice) {
     noBtn.addEventListener("touchstart", e => {
-        const maxX = area.clientWidth - 200;
-        const minX = -200;
-        const maxY = area.clientHeight;
-        const minY = -300;
+        const maxX = window.innerWidth - btnWidth;
+        const maxY = window.innerHeight - btnHeight;
 
-        x = Math.random() * (maxX - minX) + minX;
-        y = Math.random() * (maxY - minY) + minY;
+        x = Math.random() * maxX;
+        y = Math.random() * maxY;
 
         noBtn.style.transform = `translate(${x}px, ${y}px)`;
         e.preventDefault(); // prevent accidental tap
@@ -166,7 +167,7 @@ document.getElementById("yes").onclick = () => {
     document.body.innerHTML = `
         <div class="container">
             <img class="gif" src="https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif">
-            <h1>Yaaay ❤️😂</h1>
+            <h1>Best choice ever ❤️😂</h1>
             <div style="font-size:80px">🥰💘🎉</div>
         </div>`;
 };
@@ -174,7 +175,7 @@ document.getElementById("yes").onclick = () => {
 function spawnHeart() {
     const heart = document.createElement("div");
     heart.className = "heart";
-    heart.textContent = "💖";
+    heart.textContent = "❤️";
 
     heart.style.left = Math.random() * window.innerWidth + "px";
     heart.style.top  = (window.innerHeight + 20) + "px";
@@ -188,6 +189,3 @@ setInterval(spawnHeart, 300);
 </script>
 </body>
 </html>
-
-
-
