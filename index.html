@@ -138,9 +138,9 @@ function repel(targetX, targetY) {
 
         // Clamp to screen bounds
         const maxX = window.innerWidth - btnWidth;
-        const minX = window.innerWidth;
+        const minX = -200;
         const maxY = window.innerHeight - btnHeight;
-        const minY = window.innerHeight;
+        const minY = -200;
 
         x = clamp(x, minX, maxX);
         y = clamp(y, minY, maxY);
@@ -194,4 +194,5 @@ setInterval(spawnHeart, 300);
 </script>
 </body>
 </html>
+
 
