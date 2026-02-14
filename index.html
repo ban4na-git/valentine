@@ -49,7 +49,7 @@ h1 {
 
 button {
     position: absolute;
-    width: 110px;
+    width: 80px;
     height: 44px;
     border: none;
     border-radius: 999px;
@@ -138,9 +138,9 @@ function repel(targetX, targetY) {
 
         // Clamp to screen bounds
         const maxX = window.innerWidth - btnWidth;
-        const minX = 0;
+        const minX = window.innerWidth;
         const maxY = window.innerHeight - btnHeight;
-        const minY = 0;
+        const minY = window.innerHeight;
 
         x = clamp(x, minX, maxX);
         y = clamp(y, minY, maxY);
@@ -172,7 +172,7 @@ document.getElementById("yes").onclick = () => {
     document.body.innerHTML = `
         <div class="container">
             <img class="gif" src="https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif">
-            <h1>Yaaay ❤️😂</h1>
+            <h1>Rbaht maana l 3asba ❤️</h1>
             <div style="font-size:80px">🥰💘🎉</div>
         </div>`;
 };
@@ -194,3 +194,4 @@ setInterval(spawnHeart, 300);
 </script>
 </body>
 </html>
+
