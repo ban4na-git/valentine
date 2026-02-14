@@ -43,7 +43,7 @@ h1 {
 .buttons {
     position: relative;
     width: 260px;
-    height: 80px;
+    height: 140px; /* VIRTUAL CAGE HEIGHT */
     margin-top: 10px;
 }
 
@@ -66,7 +66,8 @@ button {
 }
 
 #no {
-    right: 0;
+    left: 0;          /* remove right bias */
+    top: 0;
     background: white;
     color: #ff4d6d;
 }
@@ -105,15 +106,12 @@ const btnHeight = noBtn.offsetHeight;
 let x = area.clientWidth - btnWidth;
 let y = 0;
 
-// Detect if mobile / touch device
 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-// Universal clamp function
 function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
 }
 
-// Desktop: smooth repulsive force
 function repel(targetX, targetY) {
     const rect = noBtn.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
@@ -136,7 +134,6 @@ function repel(targetX, targetY) {
         x -= Math.cos(angle) * strength * force * 6 + jitterX;
         y -= Math.sin(angle) * strength * force * 6 + jitterY;
 
-        // Clamp to screen bounds
         const maxX = window.innerWidth - btnWidth;
         const minX = -400;
         const maxY = window.innerHeight - btnHeight;
@@ -149,23 +146,37 @@ function repel(targetX, targetY) {
     }
 }
 
-// Desktop
 if (!isTouchDevice) {
     document.addEventListener("mousemove", e => repel(e.clientX, e.clientY));
 }
 
-// Mobile / touch: jump randomly within screen bounds
+/* MOBILE: JUMP INSIDE CAGE */
+function jumpInsideCage() {
+    const maxX = area.clientWidth  - btnWidth - 100;
+    const maxY = area.clientHeight - btnHeight;
+
+    const newX = Math.random() * maxX - 100;
+    const newY = Math.random() * maxY - 50;
+
+    noBtn.style.left = newX + "px";
+    noBtn.style.top  = newY + "px";
+
+    const wiggleX = (Math.random() - 0.1) * 10;
+    const wiggleY = (Math.random() - 0.1) * 10;
+    const rotate  = (Math.random() - 0.5) * 20;
+    const scale   = 0.9 + Math.random() * 0.1;
+
+    noBtn.style.transform =
+        `translate(${x + wiggleX}px, ${y + wiggleY}px)
+         rotate(${rotate}deg)
+         scale(${scale})`;
+}
+
 if (isTouchDevice) {
     noBtn.addEventListener("touchstart", e => {
-        const maxX = window.innerWidth - btnWidth;
-        const maxY = window.innerHeight - btnHeight;
-
-        x = Math.random() * maxX;
-        y = Math.random() * maxY;
-
-        noBtn.style.transform = `translate(${x}px, ${y}px)`;
-        e.preventDefault(); // prevent accidental tap
-    }, {passive: false});
+        jumpInsideCage();
+        e.preventDefault();
+    }, {passive:false});
 }
 
 document.getElementById("yes").onclick = () => {
@@ -194,7 +205,3 @@ setInterval(spawnHeart, 300);
 </script>
 </body>
 </html>
-
-
-
-
