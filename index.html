@@ -137,10 +137,10 @@ function repel(targetX, targetY) {
         y -= Math.sin(angle) * strength * force * 6 + jitterY;
 
         // Clamp to screen bounds
-        const maxX = clientWidth - btnWidth;
-        const minX = -300;
-        const maxY = clientWidth - btnHeight;
-        const minY = -300;
+        const maxX = window.innerWidth - btnWidth;
+        const minX = -400;
+        const maxY = window.innerHeight - btnHeight;
+        const minY = -400;
 
         x = clamp(x, minX, maxX);
         y = clamp(y, minY, maxY);
